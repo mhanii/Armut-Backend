@@ -14,7 +14,6 @@ import json
 
 # Create your views here.
 
-@method_decorator(csrf_exempt, name='dispatch')
 class ViewCart(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -31,7 +30,6 @@ class ViewCart(APIView):
 
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class LoadCart(APIView):
     permission_classes = []  # Temporarily remove authentication requirement
     
@@ -69,7 +67,6 @@ class LoadCart(APIView):
         except userCart.DoesNotExist:
             return Response({"cartItems": [], "amount": 0})
         
-@method_decorator(csrf_exempt, name='dispatch')
 class ClearCart(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -81,7 +78,6 @@ class ClearCart(APIView):
             return Response("Cart cleared successfully", status=status.HTTP_200_OK)
         except userCart.DoesNotExist:
             return Response("Cart does not exist", status=status.HTTP_404_NOT_FOUND)        
-@method_decorator(csrf_exempt, name='dispatch')
 class SetCart(APIView):
     def post(self, request):
         user = request.user
@@ -142,7 +138,6 @@ class AddToCart(APIView):
         else:
             return Response("Item ID is required.", status=400)
 
-@method_decorator(csrf_exempt, name='dispatch')
 class RemoveFromCart(APIView):
     def delete(self, request):
         user = request.user
@@ -167,7 +162,6 @@ class RemoveFromCart(APIView):
         
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class DecreaseCartItemQuantity(APIView):
     def post(self, request):
         user = request.user
