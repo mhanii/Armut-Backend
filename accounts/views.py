@@ -24,11 +24,20 @@ class CheckAuthenticatedView(APIView):
         try:
             isAuthenticated = user.is_authenticated
             if isAuthenticated:
-                return Response({'isAuthenticated':'success'})
+                return Response({
+                    'isAuthenticated': 'success',
+                    'user_id': user.id,
+                    'username': user.username,
+                    'email': user.email if hasattr(user, 'email') else user.username
+                })
             else:
-                return Response({'isAuthenticated':'error'})
-        except:
-            return Response({'error':'Something went wrong'})
+                return Response({
+                    'isAuthenticated': 'error',
+                    'user_type': str(type(user)),
+                    'session_id': request.session.session_key
+                })
+        except Exception as e:
+            return Response({'error': f'Something went wrong: {str(e)}'})
         
 
 
@@ -129,7 +138,7 @@ class VerifyView(APIView):
 
     
 
-@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny, )
 
@@ -140,12 +149,10 @@ class LoginView(APIView):
             email = data['email']
             password = data['password']
 
-
-
-            user  = auth.authenticate(username=email,password= password)
+            user = auth.authenticate(username=email, password=password)
 
             if user is not None:
-                auth.login(request,user)
+                auth.login(request, user)
                 # Get user profile data
                 try:
                     profile = userProfile.objects.get(user=user)
@@ -157,8 +164,8 @@ class LoginView(APIView):
                 return Response(response)
             else:
                 return Response({'error':'Email or password is incorrect'})
-        except:
-            return Response({'error':'Something went wrong'})
+        except Exception as e:
+            return Response({'error': f'Something went wrong: {str(e)}'})
 
 class LogoutView(APIView):
     def post(self,request,format=None):
