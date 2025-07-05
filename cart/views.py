@@ -3,27 +3,48 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.models import Product
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import AnonymousUser
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from .models import User,userCart,userCartItem
 from .serializers import UserCartSerializer
 from api.serializer import ProductTypeSerializer
 import json
+
 # Create your views here.
 
 class ViewCart(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self,request):
-        user            = request.user
+        user = request.user
         try:
-            cart            = userCart.objects.get(user=user)
-            cart            = UserCartSerializer(cart)
+            cart = userCart.objects.get(user=user)
+            cart = UserCartSerializer(cart)
             return Response({"data":cart.data})
+        except userCart.DoesNotExist:
+            return Response({"error": "Cart not found"}, status=404)
         except Exception as err:
-            return Response({"error":f"Something went wrong! {err}"})
+            return Response({"error":f"Something went wrong! {err}"}, status=500)
 
 
 
 class LoadCart(APIView):
+    permission_classes = []  # Temporarily remove authentication requirement
+    
     def get(self, request):
         user = request.user
+        
+        # Debug information
+        if not user.is_authenticated:
+            return Response({
+                "error": "User not authenticated",
+                "user_type": str(type(user)),
+                "session_id": request.session.session_key,
+                "cartItems": [],
+                "amount": 0
+            })
 
         try:
             user_cart = userCart.objects.get(user=user)
@@ -44,9 +65,11 @@ class LoadCart(APIView):
 
             return Response({"cartItems":cart_data,"amount":len(cart_items)})
         except userCart.DoesNotExist:
-            return Response("Cart does not exist for the user.", status=400)
+            return Response({"cartItems": [], "amount": 0})
         
 class ClearCart(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request):
         user = request.user
         try:
@@ -81,7 +104,8 @@ class SetCart(APIView):
                 user_cart.items.add(cart_item)
 
         return Response("Cart items added successfully.")
-
+    
+@method_decorator(csrf_exempt, name='dispatch')
 class AddToCart(APIView):
     def post(self, request):
         print(request)
