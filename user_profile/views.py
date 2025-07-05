@@ -179,6 +179,7 @@ class UserOrderListView(APIView):
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class CreateOrderFromCartView(APIView):
     permission_classes = [IsAuthenticated]
     @transaction.atomic

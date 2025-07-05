@@ -209,6 +209,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     serializer_class = ProductTypeSerializer
     permission_classes = [permissions.AllowAny]
 
+@method_decorator(csrf_exempt, name='dispatch')
 class VendorProductCreateView(generics.CreateAPIView):
     serializer_class = ProductCreateSerializer
     permission_classes = [IsAuthenticated]

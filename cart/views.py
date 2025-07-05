@@ -5,6 +5,8 @@ from api.models import Product
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import AnonymousUser
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from .models import User,userCart,userCartItem
 from .serializers import UserCartSerializer
 from api.serializer import ProductTypeSerializer
@@ -64,6 +66,7 @@ class LoadCart(APIView):
         except userCart.DoesNotExist:
             return Response({"cartItems": [], "amount": 0})
         
+@method_decorator(csrf_exempt, name='dispatch')
 class ClearCart(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -102,6 +105,7 @@ class SetCart(APIView):
 
         return Response("Cart items added successfully.")
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AddToCart(APIView):
     def post(self, request):
         print(request)
@@ -134,6 +138,7 @@ class AddToCart(APIView):
         else:
             return Response("Item ID is required.", status=400)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RemoveFromCart(APIView):
     def delete(self, request):
         user = request.user
@@ -158,6 +163,7 @@ class RemoveFromCart(APIView):
         
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class DecreaseCartItemQuantity(APIView):
     def post(self, request):
         user = request.user
