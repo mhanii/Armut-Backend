@@ -1,0 +1,122 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Verification code.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+
+        .logo{
+            padding-left: 1rem;
+            font-size: 3.1rem;
+            color: white;
+            
+
+
+        }
+        .container {
+            width: 45%;
+            background: whitesmoke;
+            font-family: 'Montserrat', sans-serif;
+            margin:auto;
+            border-radius: 0.2rem;
+            box-shadow: 0px 10px 10px 0px rgba(161, 138, 128, 0.35);
+        }
+
+        .img-container {
+            width: 100%;
+            background-color: rgba(68, 32 ,0 , 0.3);
+            border-radius: 0.2rem;
+        }
+
+        .armut_logo {
+            padding: 1rem;
+            max-width: 25%;
+            max-height: 25%;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: rgba(68, 32, 0, 0.71);
+        }
+
+        .text {
+            margin: 1rem;
+            color: rgba(68, 32, 0, 0.71);
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .code_container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .code {
+            font-size: 4rem;
+            letter-spacing: 1rem;
+            color: rgba(68, 32, 0, 0.71);
+            margin-bottom: 0;
+        }
+
+
+        .ender {
+            font-size: 1.3rem;
+            color: rgba(68, 32, 0, 0.81);
+            padding: 1rem;
+            background-color: rgb(242, 242, 242);
+            margin-top: 3rem;
+        }
+
+        p {
+            margin: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: rgba(68, 32, 0, 0.91);
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container-container">
+    <table class="container" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                <table class="img-container" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td>
+                            <h1 class="logo">Armut</h1>
+                        </td>
+                    </tr>
+                </table>
+                <h1 class="title">Welcome to Armut!</h1>
+                <p class="text">Hello!<br>Your verification code for your <a href="http://localhost:8000">Armut</a> account is:</p>
+                <table class="code_container" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td>
+                            <h1 class="code">{{code}}</h1>
+                        </td>
+                    </tr>
+  
+                </table>
+                <div class="ender">
+                    <p>Thank you for signing up.</p>
+                    <p>Have a great day!</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+
+</html>

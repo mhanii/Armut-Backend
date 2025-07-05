@@ -1,0 +1,11 @@
+
+Welcome to Armut!
+    Verification code.
+    Hello!
+    Your verification code for your Armut account is:
+        {{code}}
+
+    Thank you for signing up.
+    Have a great day!
+
+
