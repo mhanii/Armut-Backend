@@ -15,7 +15,6 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from api.models import Store
 
 @method_decorator(csrf_protect,name='dispatch')
 class CheckAuthenticatedView(APIView):
@@ -24,20 +23,11 @@ class CheckAuthenticatedView(APIView):
         try:
             isAuthenticated = user.is_authenticated
             if isAuthenticated:
-                return Response({
-                    'isAuthenticated': 'success',
-                    'user_id': user.id,
-                    'username': user.username,
-                    'email': user.email if hasattr(user, 'email') else user.username
-                })
+                return Response({'isAuthenticated':'success'})
             else:
-                return Response({
-                    'isAuthenticated': 'error',
-                    'user_type': str(type(user)),
-                    'session_id': request.session.session_key
-                })
-        except Exception as e:
-            return Response({'error': f'Something went wrong: {str(e)}'})
+                return Response({'isAuthenticated':'error'})
+        except:
+            return Response({'error':'Something went wrong'})
         
 
 
@@ -51,52 +41,21 @@ class SignupView(APIView):
 
         email = data['email']
         password = data['password']
-        first_name = data.get('first_name', '')
-        last_name = data.get('last_name', '')
-        user_type = data.get('user_type', 'customer')
         if len(password) >= 8:
             try:
                 if User.objects.filter(username=email).exists():
-                    user = User.objects.get(username=email)
-                    if user.is_active:
+                    if User.objects.get(username=email).is_active:
                         return Response({'error':'Email already registered'})
                     else:
                         # Directly activate the user if not already active
+                        user = User.objects.get(username=email)
                         user.is_active = True
                         user.set_password(password)
                         user.save()
-                        # Update or create userProfile
-                        profile, created = userProfile.objects.get_or_create(user=user)
-                        profile.first_name = first_name
-                        profile.last_name = last_name
-                        profile.user_type = user_type
-                        profile.save()
-                        
-                        # If user is a vendor and doesn't have a store, create one
-                        if user_type == 'vendor' and not Store.objects.filter(owner=user).exists():
-                            store_name = f"{first_name}'s Store" if first_name else f"{email}'s Store"
-                            Store.objects.create(
-                                name=store_name,
-                                description=f"Welcome to {store_name}",
-                                owner=user
-                            )
-                        
-                        return Response({'success':'User activated and profile updated!'})
+                        return Response({'success':'User activated and password set!'})
                 else:
                     user = User.objects.create_user(username=email, password=password, is_active=True)
-                    # Create userProfile with provided info
-                    userProfile.objects.create(user=user, first_name=first_name, last_name=last_name, user_type=user_type)
-                    
-                    # If user is a vendor, create a default store
-                    if user_type == 'vendor':
-                        store_name = f"{first_name}'s Store" if first_name else f"{email}'s Store"
-                        Store.objects.create(
-                            name=store_name,
-                            description=f"Welcome to {store_name}",
-                            owner=user
-                        )
-                    
-                    return Response({'success':'User created, activated, and profile set successfully'})
+                    return Response({'success':'User created and activated successfully'})
             except Exception as err:
                 return Response({'error':f'Something went wrong:{err}'})
         else:
@@ -138,7 +97,7 @@ class VerifyView(APIView):
 
     
 
-@method_decorator(csrf_protect, name='dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny, )
 
@@ -149,23 +108,17 @@ class LoginView(APIView):
             email = data['email']
             password = data['password']
 
-            user = auth.authenticate(username=email, password=password)
+
+
+            user  = auth.authenticate(username=email,password= password)
 
             if user is not None:
-                auth.login(request, user)
-                # Get user profile data
-                try:
-                    profile = userProfile.objects.get(user=user)
-                    profile_data = userProfileSerializer(profile).data
-                except userProfile.DoesNotExist:
-                    profile_data = {}
-                response = {'success': 'User logged in', 'email': email}
-                response.update(profile_data)
-                return Response(response)
+                auth.login(request,user)
+                return Response({'success':'User logged in','email':email,})
             else:
                 return Response({'error':'Email or password is incorrect'})
-        except Exception as e:
-            return Response({'error': f'Something went wrong: {str(e)}'})
+        except:
+            return Response({'error':'Something went wrong'})
 
 class LogoutView(APIView):
     def post(self,request,format=None):
