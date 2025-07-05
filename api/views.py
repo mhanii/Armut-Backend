@@ -29,6 +29,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProductView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny, )
     serializer_class = ProductTypeSerializer
@@ -48,11 +49,13 @@ class ProductView(generics.ListAPIView):
             queryset = queryset.filter(price__lte=max_price)
         return queryset
 
+@method_decorator(csrf_exempt, name='dispatch')
 class BannerView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny, )
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
 
+@method_decorator(csrf_exempt, name='dispatch')
 class DiscountView(generics.ListAPIView):
     permission_classes = (permissions.AllowAny, )
     queryset = Product.objects.exclude(discount = 0).order_by("-discount")
@@ -66,6 +69,7 @@ def ServeImage(request,image_file,folder):
     return FileResponse(file)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProductDetails(APIView):
     permission_classes = (permissions.AllowAny, )
     def get(self,request,link):
@@ -74,6 +78,7 @@ class ProductDetails(APIView):
         return Response(serializer.data)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class SearchView(APIView):
     permission_classes = (permissions.AllowAny, )
     def get(self,request):
@@ -88,6 +93,7 @@ class SearchView(APIView):
            
         return Response(serializer.data)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class CategoryView(APIView):
     permission_classes = (permissions.AllowAny, )
     def get(self,request,cate):
@@ -97,6 +103,7 @@ class CategoryView(APIView):
         serializer = ProductTypeSerializer(querysets,many=True)
         return Response(serializer.data)
     
+@method_decorator(csrf_exempt, name='dispatch')
 class StoreListCreateView(generics.ListCreateAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
@@ -105,6 +112,7 @@ class StoreListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class StoreDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
@@ -113,6 +121,7 @@ class StoreDetailView(generics.RetrieveUpdateDestroyAPIView):
         # Only allow vendors to edit/delete their own store
         return Store.objects.filter(owner=self.request.user)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class VendorProductListCreateView(generics.ListCreateAPIView):
     serializer_class = ProductTypeSerializer
     permission_classes = [IsAuthenticated]
@@ -125,6 +134,7 @@ class VendorProductListCreateView(generics.ListCreateAPIView):
         store = Store.objects.get(id=store_id, owner=self.request.user)
         serializer.save(store=store)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class VendorProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     GET: Retrieve a product by its id (if owned by vendor)
@@ -142,6 +152,7 @@ class VendorProductDetailView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied('You do not have permission to access this product.')
         return obj
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AdminStoreListView(generics.ListAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
@@ -153,6 +164,7 @@ class AdminStoreListView(generics.ListAPIView):
             return Response({'detail': 'Not authorized.'}, status=403)
         return super().get(request, *args, **kwargs)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AdminProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductTypeSerializer
@@ -163,6 +175,7 @@ class AdminProductListView(generics.ListAPIView):
             return Response({'detail': 'Not authorized.'}, status=403)
         return super().get(request, *args, **kwargs)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProductImageUploadView(generics.CreateAPIView):
     serializer_class = ProductImageSerializer
     permission_classes = [IsAuthenticated]
@@ -175,6 +188,7 @@ class ProductImageUploadView(generics.CreateAPIView):
             raise PermissionDenied('You do not have permission to add images to this product.')
         serializer.save(product=product)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProductImageDeleteView(generics.DestroyAPIView):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
@@ -186,16 +200,19 @@ class ProductImageDeleteView(generics.DestroyAPIView):
             raise PermissionDenied('You do not have permission to delete images from this product.')
         return obj
 
+@method_decorator(csrf_exempt, name='dispatch')
 class CategoryListView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
 
+@method_decorator(csrf_exempt, name='dispatch')
 class StoreListView(generics.ListAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
     permission_classes = [permissions.AllowAny]
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProductByVendorView(generics.RetrieveAPIView):
     serializer_class = ProductTypeSerializer
     permission_classes = [permissions.AllowAny]
@@ -204,6 +221,7 @@ class ProductByVendorView(generics.RetrieveAPIView):
         product_id = self.kwargs['product_id']
         return get_object_or_404(Product, id=product_id, store__owner__id=vendor_id)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProductRetrieveView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductTypeSerializer
@@ -234,6 +252,7 @@ class VendorProductCreateView(generics.CreateAPIView):
         return product
 
 # Health check endpoint
+@method_decorator(csrf_exempt, name='dispatch')
 class HealthCheckView(APIView):
     permission_classes = [permissions.AllowAny]
     

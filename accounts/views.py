@@ -16,7 +16,7 @@ from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
-@method_decorator(csrf_protect,name='dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class CheckAuthenticatedView(APIView):
     def get(self,request,format=None):
         user = request.user
@@ -61,7 +61,7 @@ class SignupView(APIView):
         else:
             return Response({'error':'Password too short (must be at least 8 characters)'})
 
-@method_decorator(csrf_protect,name='dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class VerifyView(APIView):
     permission_classes = (permissions.AllowAny, )
 
@@ -97,7 +97,7 @@ class VerifyView(APIView):
 
     
 
-@method_decorator(csrf_protect, name='dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny, )
 
@@ -120,6 +120,7 @@ class LoginView(APIView):
         except:
             return Response({'error':'Something went wrong'})
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LogoutView(APIView):
     def post(self,request,format=None):
         try:
@@ -137,6 +138,7 @@ class GetCSRFToken(APIView):
         return Response({'success':'CSRF cookie set'})
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class DeleteAccountView(APIView):
     def delete(self,request,format=None):
 
@@ -153,6 +155,7 @@ class DeleteAccountView(APIView):
 
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetUsersView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -163,6 +166,7 @@ class GetUsersView(APIView):
         return Response(users.data)
     
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetUsersProfileView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -173,6 +177,7 @@ class GetUsersProfileView(APIView):
         return Response(userProfiles.data)
     
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GetUsersAddressView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -182,6 +187,7 @@ class GetUsersAddressView(APIView):
 
         return Response(userAddresses.data)
     
+@method_decorator(csrf_exempt, name='dispatch')
 class GetUsersVerificationStateView(APIView):
     permission_classes = (permissions.AllowAny,)
 
