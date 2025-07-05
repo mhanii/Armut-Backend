@@ -246,7 +246,8 @@ CSRF_COOKIE_SAMESITE = 'None'  # Allow cross-site requests
 SESSION_COOKIE_SAMESITE = 'None'  # Allow cross-site requests
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
-
+CSRF_COOKIE_SECURE = True  # Only send over HTTPS
+SESSION_COOKIE_SECURE = True  # Only send over HTTPS
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
