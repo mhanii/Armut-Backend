@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -245,8 +244,8 @@ CSRF_TRUSTED_ORIGINS = [
 # Session and Cookie settings for production
 CSRF_COOKIE_SAMESITE = 'None'  # Allow cross-site requests
 SESSION_COOKIE_SAMESITE = 'None'  # Allow cross-site requests
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_HTTPONLY = False
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
 
 
 # Default primary key field type
@@ -262,14 +261,9 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
 SESSION_SAVE_EVERY_REQUEST = True
-CSRF_COOKIE_SECURE = True  # Only send over HTTPS
-SESSION_COOKIE_SECURE = True  # Only send over HTTPS
-CSRF_COOKIE_DOMAIN = None  # Let Django set the domain
-SESSION_COOKIE_DOMAIN = None  # Let Django set the domain
+
 # Authentication settings
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Configure django_heroku for production
-django_heroku.settings(locals())
