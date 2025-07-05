@@ -3,8 +3,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.models import Product
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.models import AnonymousUser
 from .models import User,userCart,userCartItem
 from .serializers import UserCartSerializer
 from api.serializer import ProductTypeSerializer
@@ -12,24 +10,18 @@ import json
 # Create your views here.
 
 class ViewCart(APIView):
-    permission_classes = [IsAuthenticated]
-    
     def get(self,request):
-        user = request.user
+        user            = request.user
         try:
-            cart = userCart.objects.get(user=user)
-            cart = UserCartSerializer(cart)
+            cart            = userCart.objects.get(user=user)
+            cart            = UserCartSerializer(cart)
             return Response({"data":cart.data})
-        except userCart.DoesNotExist:
-            return Response({"error": "Cart not found"}, status=404)
         except Exception as err:
-            return Response({"error":f"Something went wrong! {err}"}, status=500)
+            return Response({"error":f"Something went wrong! {err}"})
 
 
 
 class LoadCart(APIView):
-    permission_classes = [IsAuthenticated]
-    
     def get(self, request):
         user = request.user
 
@@ -52,11 +44,9 @@ class LoadCart(APIView):
 
             return Response({"cartItems":cart_data,"amount":len(cart_items)})
         except userCart.DoesNotExist:
-            return Response({"cartItems": [], "amount": 0})
+            return Response("Cart does not exist for the user.", status=400)
         
 class ClearCart(APIView):
-    permission_classes = [IsAuthenticated]
-    
     def post(self, request):
         user = request.user
         try:
