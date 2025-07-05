@@ -33,7 +33,10 @@ ALLOWED_HOSTS = [
     "armutfc.com",
     "armut-backend.vercel.app",
     ".vercel.app",
-    ".now.sh"
+    ".now.sh",
+    ".onrender.com",
+    ".render.com",
+    "*"  # Temporarily allow all hosts for debugging
 ]
 
 
@@ -169,11 +172,19 @@ STATICFILES_DIRS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES' : [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',  # Temporarily allow all for debugging
     ],
     'DEFAULT_AUTHENTICATION_CLASSES' : [
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
 }
 
 # CORS settings for production
@@ -188,6 +199,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://armut-frontend.vercel.app",
     "https://armut-frontend-git-main.vercel.app",
     "https://armut-frontend-*.vercel.app",
+    "https://*.onrender.com",
+    "https://*.render.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -225,6 +238,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://armut-frontend.vercel.app",
     "https://armut-frontend-git-main.vercel.app",
     "https://armut-frontend-*.vercel.app",
+    "https://*.onrender.com",
+    "https://*.render.com",
 ]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -236,3 +251,10 @@ SESSION_COOKIE_HTTPONLY = False
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Additional settings for production deployment
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Configure django_heroku for production
+django_heroku.settings(locals())
