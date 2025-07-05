@@ -5,13 +5,10 @@ from api.models import Product
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import AnonymousUser
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from .models import User,userCart,userCartItem
 from .serializers import UserCartSerializer
 from api.serializer import ProductTypeSerializer
 import json
-
 # Create your views here.
 
 class ViewCart(APIView):
@@ -31,20 +28,10 @@ class ViewCart(APIView):
 
 
 class LoadCart(APIView):
-    permission_classes = []  # Temporarily remove authentication requirement
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         user = request.user
-        
-        # Debug information
-        if not user.is_authenticated:
-            return Response({
-                "error": "User not authenticated",
-                "user_type": str(type(user)),
-                "session_id": request.session.session_key,
-                "cartItems": [],
-                "amount": 0
-            })
 
         try:
             user_cart = userCart.objects.get(user=user)
@@ -104,8 +91,7 @@ class SetCart(APIView):
                 user_cart.items.add(cart_item)
 
         return Response("Cart items added successfully.")
-    
-@method_decorator(csrf_exempt, name='dispatch')
+
 class AddToCart(APIView):
     def post(self, request):
         print(request)
