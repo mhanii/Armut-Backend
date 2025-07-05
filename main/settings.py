@@ -35,8 +35,7 @@ ALLOWED_HOSTS = [
     ".vercel.app",
     ".now.sh",
     ".onrender.com",
-    ".render.com",
-    "*"  # Temporarily allow all hosts for debugging
+    ".render.com"
 ]
 
 
@@ -172,19 +171,11 @@ STATICFILES_DIRS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES' : [
-        'rest_framework.permissions.AllowAny',  # Temporarily allow all for debugging
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES' : [
         'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-        'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser',
-    ],
+    ]
 }
 
 # CORS settings for production
@@ -199,8 +190,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://armut-frontend.vercel.app",
     "https://armut-frontend-git-main.vercel.app",
     "https://armut-frontend-*.vercel.app",
-    "https://*.onrender.com",
-    "https://*.render.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -242,34 +231,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.render.com",
 ]
 
-# Session and Cookie settings for production
-CSRF_COOKIE_SAMESITE = 'None'  # Allow cross-site requests
-SESSION_COOKIE_SAMESITE = 'None'  # Allow cross-site requests
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SECURE = True  # Only send over HTTPS
-SESSION_COOKIE_SECURE = True  # Only send over HTTPS
-CSRF_COOKIE_DOMAIN = None  # Let Django set the domain
-SESSION_COOKIE_DOMAIN = None  # Let Django set the domain
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Additional settings for production deployment
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# Session settings
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
-SESSION_SAVE_EVERY_REQUEST = True
-
-# Authentication settings
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-# Configure django_heroku for production
-django_heroku.settings(locals())
