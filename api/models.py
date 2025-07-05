@@ -8,7 +8,7 @@ from .utils import unique_slug_generator
 
 class Category(models.Model):
     name = models.CharField(max_length=15, unique=True)
-    imageUrl = models.ImageField(upload_to='api/static/images/categories', blank=True, null=True)
+    imageUrl = models.ImageField(upload_to='static/images/categories', blank=True, null=True)
     class Meta:
         verbose_name_plural = "Categories"
         constraints = [
@@ -29,7 +29,7 @@ class Store(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='stores')
-    imageUrl = models.ImageField(upload_to='api/static/images/store_logos', blank=True, null=True)
+    imageUrl = models.ImageField(upload_to='static/images/store_logos', blank=True, null=True)
     def __str__(self):
         return self.name
 
@@ -55,7 +55,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    imageUrl = models.ImageField(upload_to='api/static/images/products')
+    imageUrl = models.ImageField(upload_to='static/images/products')
     color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, blank=True, related_name='images')
     def __str__(self):
         return f"Image for {self.product.name}"
@@ -63,7 +63,7 @@ class ProductImage(models.Model):
 class Banner(models.Model):
     title              = models.CharField(max_length=50,null=True,default="")
     description        = models.CharField(max_length=150,null=False)
-    imageUrl              = models.ImageField(upload_to='api/static/images/banners')
+    imageUrl              = models.ImageField(upload_to='static/images/banners')
 
 
 
