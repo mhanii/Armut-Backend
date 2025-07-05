@@ -105,7 +105,6 @@ class SetCart(APIView):
 
         return Response("Cart items added successfully.")
     
-@method_decorator(csrf_exempt, name='dispatch')
 class AddToCart(APIView):
     def post(self, request):
         print(request)
