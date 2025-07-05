@@ -5,11 +5,12 @@ from api.models import Product
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import AnonymousUser
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from .models import User,userCart,userCartItem
 from .serializers import UserCartSerializer
 from api.serializer import ProductTypeSerializer
 import json
-from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 

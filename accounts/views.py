@@ -97,7 +97,7 @@ class VerifyView(APIView):
 
     
 
-@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(csrf_protect, name='dispatch')
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny, )
 
