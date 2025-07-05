@@ -208,7 +208,7 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductTypeSerializer
     permission_classes = [permissions.AllowAny]
-
+    
 @method_decorator(csrf_exempt, name='dispatch')
 class VendorProductCreateView(generics.CreateAPIView):
     serializer_class = ProductCreateSerializer
